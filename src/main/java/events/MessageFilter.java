@@ -2,7 +2,6 @@ package events;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,6 +15,7 @@ import java.util.regex.Pattern;
 public class MessageFilter extends ListenerAdapter {
     public static boolean isActive = true;
     StringBuilder regexPattern = new StringBuilder();
+
     public MessageFilter() {
         JSONParser jsonParser = new JSONParser();
         try {
@@ -34,7 +34,7 @@ public class MessageFilter extends ListenerAdapter {
         }
     }
 
-    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (isActive) {
             String message = event.getMessage().getContentRaw();
             Pattern pattern = Pattern.compile(regexPattern.substring(0, regexPattern.length() - 1), Pattern.CASE_INSENSITIVE);

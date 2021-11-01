@@ -4,8 +4,6 @@ import main.RiniBot;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.util.Objects;
-
 public class CommandList extends ListenerAdapter {
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
@@ -27,7 +25,7 @@ public class CommandList extends ListenerAdapter {
 
             if (message.equals(RiniBot.prefix + "filter off")) {
                 MessageFilter.isActive = false;
-                e.getChannel().sendMessage("Message Filter has been disabled by " + Objects.requireNonNull(e.getMember()).getUser().getName()).queue();
+                e.getChannel().sendMessage("Message Filter has been disabled by " + e.getMember().getUser().getName()).queue();
             }
         } else {
             if (message.equals(RiniBot.prefix + "filter off"))
@@ -35,7 +33,7 @@ public class CommandList extends ListenerAdapter {
 
             if (message.equals(RiniBot.prefix + "filter on")) {
                 MessageFilter.isActive = true;
-                e.getChannel().sendMessage("Message Filter has been enabled by " + Objects.requireNonNull(e.getMember()).getUser().getName()).queue();
+                e.getChannel().sendMessage("Message Filter has been enabled by " + e.getMember().getUser().getName()).queue();
             }
         }
     }
