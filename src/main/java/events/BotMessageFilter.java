@@ -2,6 +2,7 @@ package events;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -35,15 +36,22 @@ public class BotMessageFilter extends ListenerAdapter {
         }
     }
 
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        message = event.getMessage().getContentRaw();
+    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+        Pattern pattern = Pattern.compile(regexPattern.substring(0, regexPattern.length() - 1), Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(message);
+        if (isActive) {
+            if (matcher.find() && !Objects.requireNonNull(event.getMember()).getUser().isBot()) {
+                event.getMessage().delete().complete();
+                System.out.println(event.getMember().getUser().getName() + ": [" + matcher.toString().substring(matcher.toString().indexOf("lastmatch=")));
+            }
+        }
+
         if (command.equals(BotPrefix.prefix + "filter")) {
             if (commandGroup.length == 1)
                 sendMessage(event, "`" + BotPrefix.prefix + "help filter" + "`", false);
             if (commandGroup.length == 2) {
                 if (commandGroup[1].equals("status"))
-                    sendMessage(event, "Message Filter status: " + BotMessageFilter.getStatus(), false);
-
+                    sendMessage(event, "Message Filter status: " + getStatus(), false);
                 if (isActive) {
                     switch (commandGroup[1]) {
                         case "on" -> sendMessage(event, "Message Filter is already enabled", false);
@@ -52,12 +60,6 @@ public class BotMessageFilter extends ListenerAdapter {
                             sendMessage(event, "Message Filter has been disabled by " + Objects.requireNonNull(event.getMember()).getUser().getName(), false);
                         }
                     }
-
-                    Pattern pattern = Pattern.compile(regexPattern.substring(0, regexPattern.length() - 1), Pattern.CASE_INSENSITIVE);
-                    Matcher matcher = pattern.matcher(message);
-
-                    if (matcher.find())
-                        event.getMessage().delete().complete();
                 } else {
                     switch (commandGroup[1]) {
                         case "on" -> {
