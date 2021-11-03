@@ -9,6 +9,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,41 +41,32 @@ public class BotMessageFilter extends ListenerAdapter {
             if (commandGroup.length == 1)
                 sendMessage(event, "`" + BotPrefix.prefix + "help filter" + "`", false);
             if (commandGroup.length == 2) {
-                if (commandGroup[1].equals("status")) {
+                if (commandGroup[1].equals("status"))
                     sendMessage(event, "Message Filter status: " + BotMessageFilter.getStatus(), false);
+
+                if (isActive) {
+                    switch (commandGroup[1]) {
+                        case "on" -> sendMessage(event, "Message Filter is already enabled", false);
+                        case "off" -> {
+                            isActive = false;
+                            sendMessage(event, "Message Filter has been disabled by " + Objects.requireNonNull(event.getMember()).getUser().getName(), false);
+                        }
+                    }
+
+                    Pattern pattern = Pattern.compile(regexPattern.substring(0, regexPattern.length() - 1), Pattern.CASE_INSENSITIVE);
+                    Matcher matcher = pattern.matcher(message);
+
+                    if (matcher.find())
+                        event.getMessage().delete().complete();
+                } else {
+                    switch (commandGroup[1]) {
+                        case "on" -> {
+                            isActive = true;
+                            event.getChannel().sendMessage("Message Filter has been enabled by " + Objects.requireNonNull(event.getMember()).getUser().getName()).queue();
+                        }
+                        case "off" -> event.getChannel().sendMessage("Message Filter is already disabled").queue();
+                    }
                 }
-            }
-
-        }
-
-
-
-
-
-        if (message.equals(BotPrefix.prefix + "filter status"))
-            event.getChannel().sendMessage("Message Filter status: " + BotMessageFilter.getStatus()).queue();
-
-        if (isActive) {
-            if (message.equals(BotPrefix.prefix + "filter on"))
-                event.getChannel().sendMessage("Message Filter is already enabled").queue();
-
-            if (message.equals(BotPrefix.prefix + "filter off")) {
-                isActive = false;
-                event.getChannel().sendMessage("Message Filter has been disabled by " + event.getMember().getUser().getName()).queue();
-            }
-
-            Pattern pattern = Pattern.compile(regexPattern.substring(0, regexPattern.length() - 1), Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(message);
-
-            if (matcher.find())
-                event.getMessage().delete().complete();
-        } else {
-            if (message.equals(BotPrefix.prefix + "filter off"))
-                event.getChannel().sendMessage("Message Filter is already disabled").queue();
-
-            if (message.equals(BotPrefix.prefix + "filter on")) {
-                isActive = true;
-                event.getChannel().sendMessage("Message Filter has been enabled by " + event.getMember().getUser().getName()).queue();
             }
         }
     }
