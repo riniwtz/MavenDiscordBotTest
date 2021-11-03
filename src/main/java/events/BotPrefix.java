@@ -6,20 +6,18 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static events.BaseCommand.*;
+
 public class BotPrefix extends ListenerAdapter {
     public static char prefix = '-';
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        String message = event.getMessage().getContentRaw();
-        String[] messageGroup = message.split(" ");
 
         // prefix
-        String command = messageGroup[0];
-
         if (command.equals(prefix + "prefix")) {
-            if (messageGroup.length == 1)
+            if (commandGroup.length == 1)
                 sendMessage(event, "The bot prefix is: `" + prefix + "`", false);
-            if (messageGroup.length == 2) {
-                String newPrefix = messageGroup[1];
+            if (commandGroup.length == 2) {
+                String newPrefix = commandGroup[1];
                 if (checkValidPrefixLength(event, newPrefix) && checkValidNewPrefix(event, newPrefix)) {
                     setPrefix(newPrefix.charAt(0));
                     sendMessage(event, "RiniBot new prefix is: `" + prefix + "`", false);
@@ -48,13 +46,6 @@ public class BotPrefix extends ListenerAdapter {
         if (newPrefix.length() == 1) return true;
         sendMessage(event, "[Single prefix character only]", false);
         return false;
-    }
-
-    private void sendMessage(GuildMessageReceivedEvent event, String text, boolean isComplete) {
-        if (!isComplete)
-            event.getChannel().sendMessage(text).queue();
-        else
-            event.getChannel().sendMessage(text).complete();
     }
 
     private boolean hasNumber(String text) {

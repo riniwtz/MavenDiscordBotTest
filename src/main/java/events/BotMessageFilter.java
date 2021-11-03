@@ -1,6 +1,5 @@
 package events;
 
-import main.RiniBot;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.simple.JSONArray;
@@ -13,8 +12,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static events.BaseCommand.*;
+
 public class BotMessageFilter extends ListenerAdapter {
-    public static boolean isActive = true;
+    private static boolean isActive = true;
     StringBuilder regexPattern = new StringBuilder();
 
     public BotMessageFilter() {
@@ -23,12 +24,10 @@ public class BotMessageFilter extends ListenerAdapter {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader("excluded_words.json"));
             JSONArray excludedWords = (JSONArray) jsonObject.get("words");
             JSONArray excludedSentences = (JSONArray) jsonObject.get("sentences");
-            for (Object words : excludedWords) {
+            for (Object words : excludedWords)
                 regexPattern.append(words).append("|");
-            }
-            for (Object sentences : excludedSentences) {
+            for (Object sentences : excludedSentences)
                 regexPattern.append(sentences).append("|");
-            }
         } catch (IOException | ParseException e) {
             System.out.println("Exception occurred.");
             e.printStackTrace();
@@ -36,7 +35,21 @@ public class BotMessageFilter extends ListenerAdapter {
     }
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        String message = event.getMessage().getContentRaw();
+        message = event.getMessage().getContentRaw();
+        if (command.equals(BotPrefix.prefix + "filter")) {
+            if (commandGroup.length == 1)
+                sendMessage(event, "`" + BotPrefix.prefix + "help filter" + "`", false);
+            if (commandGroup.length == 2) {
+                if (commandGroup[1].equals("status")) {
+                    sendMessage(event, "Message Filter status: " + BotMessageFilter.getStatus(), false);
+                }
+            }
+
+        }
+
+
+
+
 
         if (message.equals(BotPrefix.prefix + "filter status"))
             event.getChannel().sendMessage("Message Filter status: " + BotMessageFilter.getStatus()).queue();
