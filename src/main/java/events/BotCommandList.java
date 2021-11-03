@@ -2,16 +2,26 @@ package events;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
+
 import static events.BaseCommand.*;
 
 public class BotCommandList extends ListenerAdapter {
 
-    public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
+    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
 
         // Commands command
-        if (message.equals(BotPrefix.prefix + "commands".toLowerCase())) {
-            e.getChannel().sendMessage("Commands List:\n" +
-                    BotPrefix.prefix + "commands\n").queue();
+        if (command.equals(BotPrefix.prefix + "commands")) {
+            sendMessage(event, "**Commands List:**\n" +
+                    BotPrefix.prefix + "commands\n" +
+                    BotPrefix.prefix + "prefix `<character>`\n" +
+                    BotPrefix.prefix + "filter `<on|off|status>`", false);
+        }
+
+        // Banana Commands
+        if (command.equals("$banana-cmd")) {
+            sendMessage(event, "**Banana Command List:**\n" +
+                    "$banana-filter `<on|off|status>`", false);
         }
     }
 }
