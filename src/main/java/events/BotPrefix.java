@@ -34,9 +34,9 @@ public class BotPrefix extends ListenerAdapter {
     private boolean checkValidNewPrefix(GuildMessageReceivedEvent event, String newPrefix) {
         // if new prefix is the same as current prefix
         if (newPrefix.charAt(0) == prefix)
-            sendMessage(event, prefix + " has already been set", false);
+            sendMessage(event, "`" + prefix + "` has already been set", false);
         else if (hasNumber(newPrefix))
-            sendMessage(event, "[Prefix must not contain any numerical values]", false);
+            sendMessage(event, "**[Prefix must not contain any numerical values]**", false);
         else
             return true;
         return false;
@@ -45,7 +45,7 @@ public class BotPrefix extends ListenerAdapter {
     private boolean checkValidPrefixLength(GuildMessageReceivedEvent event, String newPrefix) {
         // Character Length
         if (newPrefix.length() == 1) return true;
-        sendMessage(event, "[Single prefix character only]", false);
+        sendMessage(event, "**[Single prefix character only]**", false);
         return false;
     }
 
