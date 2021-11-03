@@ -26,8 +26,15 @@ public class BotMessageFilter extends ListenerAdapter {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader("excluded_words.json"));
             JSONArray excludedWords = (JSONArray) jsonObject.get("words");
             JSONArray excludedSentences = (JSONArray) jsonObject.get("sentences");
-            for (Object words : excludedWords)
-                regexPattern.append(words).append("|");
+            for (Object words : excludedWords) {
+                if (!words.equals("cum"))
+                    regexPattern.append(words).append("|");
+                else
+                    regexPattern.replace(0, regexPattern.length(), "\\bcum\\b").append("|");
+            }
+
+            System.out.println(regexPattern.substring(0, regexPattern.length() - 1));
+
             for (Object sentences : excludedSentences)
                 regexPattern.append(sentences).append("|");
         } catch (IOException | ParseException e) {
@@ -36,14 +43,14 @@ public class BotMessageFilter extends ListenerAdapter {
         }
     }
 
+
+
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         Pattern pattern = Pattern.compile(regexPattern.substring(0, regexPattern.length() - 1), Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(message);
         if (isActive) {
-            if (matcher.find() && !Objects.requireNonNull(event.getMember()).getUser().isBot()) {
+            if (matcher.find() && !Objects.requireNonNull(event.getMember()).getUser().isBot())
                 event.getMessage().delete().complete();
-                System.out.println(event.getMember().getUser().getName() + ": [" + matcher.toString().substring(matcher.toString().indexOf("lastmatch=")));
-            }
         }
 
         if (command.equals(BotPrefix.prefix + "filter")) {
