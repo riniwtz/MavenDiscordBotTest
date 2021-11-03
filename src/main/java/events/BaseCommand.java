@@ -5,8 +5,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class BaseCommand extends ListenerAdapter {
 
-    protected static String message, command;
-    protected static String[] commandGroup;
+    public static String message, command;
+    public static String[] commandGroup;
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         message = event.getMessage().getContentRaw();
