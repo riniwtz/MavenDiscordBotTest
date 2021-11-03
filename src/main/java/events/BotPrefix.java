@@ -2,6 +2,7 @@ package events;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,7 +11,7 @@ import static events.BaseCommand.*;
 
 public class BotPrefix extends ListenerAdapter {
     public static char prefix = '-';
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
 
         // prefix
         if (command.equals(prefix + "prefix")) {
