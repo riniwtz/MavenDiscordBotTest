@@ -1,7 +1,7 @@
 package main;
 
 import events.*;
-import events.BotBananaFilter;
+import events.banana.BotBananaFilter;
 import logger.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
