@@ -2,35 +2,48 @@ package logger;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 import static events.BaseCommand.*;
 
 public class Logger extends ListenerAdapter {
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        // Create a stream to hold the output
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos);
-        // IMPORTANT: Save the old System.out!
-        PrintStream old = System.out;
-        // Tell Java to use your special stream
-        System.setOut(ps);
-        // Print some output: goes to your special stream
-        System.out.println("[" + event.getMessage().getTimeCreated().format(DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm:ss a")) + "] " + Objects.requireNonNull(event.getMember()).getUser().getName() + ": " + message);
-        // Put things back
-        System.out.flush();
-        System.setOut(old);
-        String log = baos.toString();
 
+    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+        Date date = new Date();
+
+        SimpleDateFormat logDateFormat = new SimpleDateFormat("yyyy-MM-dd H:mm:ss a");
+        String logDate = logDateFormat.format(date);
+
+        SimpleDateFormat fileNameFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String fileName = fileNameFormat.format(date);
+
+        writeToFile(fileName, readConsoleLine(event, logDate, "[" + logDate + "] " +
+                "[" + event.getChannel().getName() + "] " +
+                Objects.requireNonNull(event.getMember()).getUser().getAsTag() +
+                ": " + message));
+    }
+
+    private String readConsoleLine(GuildMessageReceivedEvent event, String logDate, String lineContent) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); // Output holder
+        System.setOut(new PrintStream(byteArrayOutputStream));
+        System.out.println(lineContent);
+        System.out.flush();
+        System.setOut(System.out);
+        return byteArrayOutputStream.toString();
+    }
+
+    private void writeToFile(String fileName, String content) {
         try {
-            FileWriter logWriter = new FileWriter(System.getProperty("user.dir") + "/log.txt", true);
-            logWriter.write(log);
+            FileWriter logWriter = new FileWriter(System.getProperty("user.dir") + "/log_" + fileName + ".txt", true);
+            logWriter.write(content);
             logWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
