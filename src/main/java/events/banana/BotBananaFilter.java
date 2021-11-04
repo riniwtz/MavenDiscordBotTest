@@ -1,5 +1,6 @@
 package events.banana;
 
+import events.BotMessageFilter;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -8,8 +9,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,19 +24,29 @@ public class BotBananaFilter extends ListenerAdapter {
     StringBuilder regexPattern = new StringBuilder();
 
     public BotBananaFilter() {
-        JSONParser jsonParser = new JSONParser();
         try {
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader("excluded_names.json"));
+            JSONParser jsonParser = new JSONParser();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(BotBananaFilter.class.getResourceAsStream("/excluded_names.json"))));
+            String text;
+            StringBuilder excludedNamesJSONObject = new StringBuilder();
+            while ((text = reader.readLine()) != null)
+                excludedNamesJSONObject.append(text);
+
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(excludedNamesJSONObject.toString());
             JSONArray excludedNames = (JSONArray) jsonObject.get("names");
-            for (Object names : excludedNames) {
-                regexPattern.append(names);
-                regexPattern = new StringBuilder(regexPattern.toString().replaceAll(" ", "|"));
-                regexPattern.append("|");
-            }
+            JSONArray excludedNicknames = (JSONArray) jsonObject.get("nicknames");
+            for (Object names : excludedNames)
+                regexPattern.append(parseNameToRegex(names.toString())).append("|");
+            for (Object nicknames : excludedNicknames)
+                regexPattern.append(nicknames).append("|");
         } catch (IOException | ParseException e) {
             System.out.println("Exception occurred.");
             e.printStackTrace();
         }
+    }
+
+    private String parseNameToRegex(String name) {
+        return name.replace('.', '|').replace('_', ' ');
     }
 
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {

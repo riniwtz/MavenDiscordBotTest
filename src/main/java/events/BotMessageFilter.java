@@ -8,8 +8,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,20 +23,20 @@ public class BotMessageFilter extends ListenerAdapter {
     StringBuilder regexPattern = new StringBuilder();
 
     public BotMessageFilter() {
-        JSONParser jsonParser = new JSONParser();
         try {
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader("excluded_words.json"));
-            JSONArray excludedWords = (JSONArray) jsonObject.get("words");
-            JSONArray excludedSentences = (JSONArray) jsonObject.get("sentences");
-            for (Object words : excludedWords) {
-                if (!words.equals("cum"))
-                    regexPattern.append(words).append("|");
-                else
-                    regexPattern.replace(0, regexPattern.length(), "\\bcum\\b").append("|");
+            JSONParser jsonParser = new JSONParser();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(BotMessageFilter.class.getResourceAsStream("/excluded_words.json"))));
+            String text;
+            StringBuilder excludedWordsJSONObject = new StringBuilder();
+            while ((text = reader.readLine()) != null) {
+                excludedWordsJSONObject.append(text);
             }
 
-            System.out.println(regexPattern.substring(0, regexPattern.length() - 1));
-
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(excludedWordsJSONObject.toString());
+            JSONArray excludedWords = (JSONArray) jsonObject.get("words");
+            JSONArray excludedSentences = (JSONArray) jsonObject.get("sentences");
+            for (Object words : excludedWords)
+                regexPattern.append(words).append("|");
             for (Object sentences : excludedSentences)
                 regexPattern.append(sentences).append("|");
         } catch (IOException | ParseException e) {
@@ -42,8 +44,6 @@ public class BotMessageFilter extends ListenerAdapter {
             e.printStackTrace();
         }
     }
-
-
 
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         Pattern pattern = Pattern.compile(regexPattern.substring(0, regexPattern.length() - 1), Pattern.CASE_INSENSITIVE);

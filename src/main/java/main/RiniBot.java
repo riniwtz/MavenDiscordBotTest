@@ -1,5 +1,6 @@
 package main;
 
+import auth.BotTokenID;
 import events.*;
 import events.banana.BotBananaFilter;
 import events.changelog.Changelog;
@@ -10,7 +11,9 @@ import net.dv8tion.jda.api.JDABuilder;
 public class RiniBot {
 
     public static void main(String[] args) throws Exception {
-        JDA jda = JDABuilder.createDefault("").build();
+        BotTokenID botTokenID = new BotTokenID();
+        System.out.println("Token is connected");
+        JDA jda = JDABuilder.createDefault(botTokenID.getTokenID()).build();
         // events
         jda.addEventListener(new BaseCommand());
         jda.addEventListener(new BotCommandList());

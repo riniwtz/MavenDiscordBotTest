@@ -1,5 +1,6 @@
 package logger;
 
+import auth.BotTokenID;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +43,7 @@ public class Logger extends ListenerAdapter {
 
     private void writeToFile(String fileName, String content) {
         try {
-            FileWriter logWriter = new FileWriter(System.getProperty("user.dir") + "/log_" + fileName + ".txt", true);
+            FileWriter logWriter = new FileWriter(BotTokenID.botFolder + "/log_" + fileName + ".txt", true);
             logWriter.write(content);
             logWriter.close();
         } catch (IOException e) {
