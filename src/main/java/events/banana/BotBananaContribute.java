@@ -18,7 +18,6 @@ import static events.BaseCommand.*;
 public class BotBananaContribute extends ListenerAdapter {
 
     // System Auto
-    private String contributionAuthor = "";
     private String contributionDate = "";
 
     // Arguments
@@ -33,33 +32,35 @@ public class BotBananaContribute extends ListenerAdapter {
     // Folder Location
     private final String CONTRIBUTION_FOLDER_DIRECTORY = BotTokenID.botFolder + "/Contributions";
     private final String DATE_FOLDER_DIRECTORY = CONTRIBUTION_FOLDER_DIRECTORY + "/" + dateFolder;
-    private String NAME_FOLDER_DIRECTORY = DATE_FOLDER_DIRECTORY + "/";
 
     public BotBananaContribute() {
         makeFolder(CONTRIBUTION_FOLDER_DIRECTORY);
         makeFolder(DATE_FOLDER_DIRECTORY);
-        makeFolder(NAME_FOLDER_DIRECTORY);
     }
 
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
-        NAME_FOLDER_DIRECTORY += Objects.requireNonNull(event.getMember()).getUser().getName();
-
         if (command.equals("$contribute")) {
             if (commandGroup.length > 0 && commandGroup.length < 3 || commandGroup.length > 3)
-                sendMessage(event, "`$contribute <title> <subject>`", false);
+                sendMessage(event, "`$contribute <subject> <title>`", false);
 
             if (commandGroup.length == 3) {
                 List<Message.Attachment> attachments = event.getMessage().getAttachments();
                 if (verifyContribution(event, attachments)) {
+                    contributionSubject = commandGroup[1];
+                    contributionTitle = commandGroup[2];
+
+                    // Date Folder Directory
+                    String NAME_FOLDER_DIRECTORY = DATE_FOLDER_DIRECTORY + "/" + Objects.requireNonNull(event.getMember()).getUser().getName();
+                    makeFolder(NAME_FOLDER_DIRECTORY);
+
+                    // Info Folder Directory
+                    String INFO_FOLDER_DIRECTORY = NAME_FOLDER_DIRECTORY + "/" + "[" + contributionSubject + "] - " + contributionTitle;
+                    makeFolder(INFO_FOLDER_DIRECTORY);
+
                     sendMessage(event, "`Contribution submitted. Please wait for technical admin to verify. Message will be re-uploaded after being verified`", false);
 
                     if (attachments.isEmpty()) return; // no attachments on the message!
-
-                    File folder = new File(BotTokenID.botFolder + "/[" +
-                            Objects.requireNonNull(event.getMember()).getUser().getName() + "] " +
-                            "");
-
-                    CompletableFuture<File> future = attachments.get(0).downloadToFile(BotTokenID.botFolder + "/contribution." + attachments.get(0).getFileExtension());
+                    CompletableFuture<File> future = attachments.get(0).downloadToFile(INFO_FOLDER_DIRECTORY + "/" + attachments.get(0).getFileName());
                     future.exceptionally(error -> { // handle possible errors
                         error.printStackTrace();
                         return null;

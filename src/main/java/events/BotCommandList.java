@@ -24,7 +24,8 @@ public class BotCommandList extends ListenerAdapter {
         // Banana Commands
         if (command.equals("$banana-cmd")) {
             sendMessage(event, "**Banana Command List:**\n" +
-                    "$banana-filter `<on|off|status>`", false);
+                    "$banana-filter `<on|off|status>`" +
+                    "$contribute `<subject> <contributeTitle>", false);
         }
     }
 }
