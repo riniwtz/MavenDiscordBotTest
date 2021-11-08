@@ -1,7 +1,12 @@
 package events;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BaseCommand extends ListenerAdapter {
 
@@ -10,8 +15,12 @@ public class BaseCommand extends ListenerAdapter {
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         message = event.getMessage().getContentRaw();
-        commandGroup = message.split(" ");
+        commandGroup = message.split("\\s+");
         command = commandGroup[0];
+    }
+
+    public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
+        message = event.getMessage().getContentRaw();
     }
 
     public static void sendMessage(GuildMessageReceivedEvent event, String text, boolean isComplete) {
@@ -19,5 +28,17 @@ public class BaseCommand extends ListenerAdapter {
             event.getChannel().sendMessage(text).queue();
         else
             event.getChannel().sendMessage(text).complete();
+    }
+
+    public static boolean hasNumber(String text) {
+        Pattern pattern = Pattern.compile("[0-9]");
+        Matcher matcher = pattern.matcher(text);
+        return matcher.find();
+    }
+
+    public static boolean isNumber(String text) {
+        Pattern pattern = Pattern.compile("[0-9]+");
+        Matcher matcher = pattern.matcher(text);
+        return matcher.matches();
     }
 }
