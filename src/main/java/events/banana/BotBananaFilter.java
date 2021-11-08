@@ -1,6 +1,5 @@
 package events.banana;
 
-import events.BotMessageFilter;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +9,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Objects;
@@ -43,10 +41,6 @@ public class BotBananaFilter extends ListenerAdapter {
             System.out.println("Exception occurred.");
             e.printStackTrace();
         }
-    }
-
-    private String parseNameToRegex(String name) {
-        return name.replace('.', '|').replace('_', ' ');
     }
 
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
@@ -84,7 +78,11 @@ public class BotBananaFilter extends ListenerAdapter {
         }
     }
 
-    public static String getStatus() {
+    private String parseNameToRegex(String name) {
+        return name.replace('.', '|').replace('_', ' ');
+    }
+
+    private static String getStatus() {
         if (isActive) return "On"; else return "Off";
     }
 }
