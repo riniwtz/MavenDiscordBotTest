@@ -4,9 +4,6 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static events.BaseCommand.*;
 
 public class BotPrefix extends ListenerAdapter {
@@ -47,11 +44,5 @@ public class BotPrefix extends ListenerAdapter {
         if (newPrefix.length() == 1) return true;
         sendMessage(event, "**[Single prefix character only]**", false);
         return false;
-    }
-
-    private boolean hasNumber(String text) {
-        Pattern pattern = Pattern.compile("[0-9]");
-        Matcher matcher = pattern.matcher(text);
-        return matcher.find();
     }
 }
