@@ -2,14 +2,17 @@ package main;
 
 import auth.BotTokenID;
 import events.*;
+import events.banana.BotBananaContribute;
 import events.banana.BotBananaFilter;
 import events.changelog.Changelog;
 import logger.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
-public class RiniBot {
+import java.util.Scanner;
 
+public class RiniBot {
+    static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) throws Exception {
         BotTokenID botTokenID = new BotTokenID();
         System.out.println("Token is connected");
@@ -19,10 +22,12 @@ public class RiniBot {
         jda.addEventListener(new BotCommandList());
         jda.addEventListener(new BotMessageFilter());
         jda.addEventListener(new BotPrefix());
+        jda.addEventListener(new BotMassDelete());
         // logger
         jda.addEventListener(new Logger());
         // banana
         jda.addEventListener(new BotBananaFilter());
+        jda.addEventListener(new BotBananaContribute());
         // changelog
         jda.addEventListener(new Changelog());
 
@@ -43,7 +48,7 @@ public class RiniBot {
          * + Microsoft document modifier
          * + Contribute command
          * + Prevent admins and mods from being affected by word filter
-         * + Fix update message event to prevent bypassers
+         * + Fix update message event to prevent bypassers (COMPLETED)
          * + Learn role and server name or server exclusion method in JDA
          */
     }
