@@ -1,6 +1,7 @@
 package events;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
@@ -8,9 +9,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -20,7 +21,8 @@ import static events.BaseCommand.*;
 
 public class BotMessageFilter extends ListenerAdapter {
     private static boolean isActive = true;
-    StringBuilder regexPattern = new StringBuilder();
+    private Matcher matcher;
+    private final StringBuilder regexPattern = new StringBuilder();
 
     public BotMessageFilter() {
         try {
@@ -31,7 +33,6 @@ public class BotMessageFilter extends ListenerAdapter {
             while ((text = reader.readLine()) != null) {
                 excludedWordsJSONObject.append(text);
             }
-
             JSONObject jsonObject = (JSONObject) jsonParser.parse(excludedWordsJSONObject.toString());
             JSONArray excludedWords = (JSONArray) jsonObject.get("words");
             JSONArray excludedSentences = (JSONArray) jsonObject.get("sentences");
@@ -46,8 +47,7 @@ public class BotMessageFilter extends ListenerAdapter {
     }
 
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        Pattern pattern = Pattern.compile(regexPattern.substring(0, regexPattern.length() - 1), Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(message);
+        searchFilter();
         if (isActive) {
             if (matcher.find() && !Objects.requireNonNull(event.getMember()).getUser().isBot())
                 event.getMessage().delete().complete();
@@ -80,7 +80,20 @@ public class BotMessageFilter extends ListenerAdapter {
         }
     }
 
-    public static String getStatus() {
+    public void onGuildMessageUpdate(@Nonnull GuildMessageUpdateEvent event) {
+        searchFilter();
+        if (isActive) {
+            if (matcher.find() && !Objects.requireNonNull(event.getMember()).getUser().isBot())
+                event.getMessage().delete().complete();
+        }
+    }
+
+    private void searchFilter() {
+        Pattern pattern = Pattern.compile(regexPattern.substring(0, regexPattern.length() - 1), Pattern.CASE_INSENSITIVE);
+        matcher = pattern.matcher(message);
+    }
+
+    private static String getStatus() {
         if (isActive) return "On"; else return "Off";
     }
 }
