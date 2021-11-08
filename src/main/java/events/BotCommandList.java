@@ -17,7 +17,8 @@ public class BotCommandList extends ListenerAdapter {
             sendMessage(event, "**Commands List:**```\n" +
                     BotPrefix.prefix + "commands\n" +
                     BotPrefix.prefix + "prefix <character>\n" +
-                    BotPrefix.prefix + "filter <on|off|status>```", false);
+                    BotPrefix.prefix + "filter <on|off|status>\n" +
+                    BotPrefix.prefix + "massdelete <number>```", false);
         }
 
         // Banana Commands
