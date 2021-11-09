@@ -12,11 +12,11 @@ import net.dv8tion.jda.api.JDABuilder;
 import java.util.Scanner;
 
 public class RiniBot {
-    static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) throws Exception {
         BotTokenID botTokenID = new BotTokenID();
-        System.out.println("Token is connected");
         JDA jda = JDABuilder.createDefault(botTokenID.getTokenID()).build();
+        if (jda.getStatus().isInit()) System.out.println("Token is connected");
+
         // events
         jda.addEventListener(new BaseCommand());
         jda.addEventListener(new BotCommandList());

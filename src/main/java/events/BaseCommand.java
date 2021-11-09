@@ -1,5 +1,6 @@
 package events;
 
+import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -23,11 +24,11 @@ public class BaseCommand extends ListenerAdapter {
         message = event.getMessage().getContentRaw();
     }
 
-    public static void sendMessage(GuildMessageReceivedEvent event, String text, boolean isComplete) {
+    public static void sendMessage(GenericGuildMessageEvent event, Object text, boolean isComplete) {
         if (!isComplete)
-            event.getChannel().sendMessage(text).queue();
+            event.getChannel().sendMessage(String.valueOf(text)).queue();
         else
-            event.getChannel().sendMessage(text).complete();
+            event.getChannel().sendMessage(String.valueOf(text)).complete();
     }
 
     public static boolean hasNumber(String text) {
