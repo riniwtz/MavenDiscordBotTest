@@ -55,16 +55,16 @@ public class BotMessageFilter extends ListenerAdapter {
 
         if (command.equals(BotPrefix.prefix + "filter")) {
             if (commandGroup.length == 1)
-                sendMessage(event, "`" + BotPrefix.prefix + "help filter" + "`", false);
+                event.getChannel().sendMessage("`" + BotPrefix.prefix + "help filter" + "`").queue();
             if (commandGroup.length == 2) {
                 if (commandGroup[1].equals("status"))
-                    sendMessage(event, "Message Filter status: " + getStatus(), false);
+                    event.getChannel().sendMessage("Message Filter status: " + getStatus()).queue();
                 if (isActive) {
                     switch (commandGroup[1]) {
-                        case "on" -> sendMessage(event, "Message Filter is already enabled", false);
+                        case "on" -> event.getChannel().sendMessage("Message Filter is already enabled").queue();
                         case "off" -> {
                             isActive = false;
-                            sendMessage(event, "Message Filter has been disabled by " + Objects.requireNonNull(event.getMember()).getUser().getName(), false);
+                            event.getChannel().sendMessage("Message Filter has been disabled by " + Objects.requireNonNull(event.getMember()).getUser().getName()).queue();
                         }
                     }
                 } else {

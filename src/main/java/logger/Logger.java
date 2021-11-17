@@ -43,7 +43,7 @@ public class Logger extends ListenerAdapter {
 
     private void writeToFile(String fileName, String content) {
         try {
-            FileWriter logWriter = new FileWriter(BotTokenID.botFolder + "/log_" + fileName + ".txt", true);
+            FileWriter logWriter = new FileWriter(BotTokenID.getBotFolder() + "/log_" + fileName + ".txt", true);
             logWriter.write(content);
             logWriter.close();
         } catch (IOException e) {

@@ -14,20 +14,20 @@ public class BotCommandList extends ListenerAdapter {
 
         // Commands command
         if (command.equals(BotPrefix.prefix + "commands") && !Objects.requireNonNull(event.getMember()).getUser().isBot()) {
-            sendMessage(event, "**Commands List:**```\n" +
+            event.getChannel().sendMessage("**Commands List:**```\n" +
                     BotPrefix.prefix + "commands\n" +
                     BotPrefix.prefix + "prefix <character>\n" +
                     BotPrefix.prefix + "filter (on|off|status)\n" +
-                    BotPrefix.prefix + "massdelete <number>```", false);
+                    BotPrefix.prefix + "massdelete <number>```").queue();
         }
 
         // Banana Commands
         if (command.equals("$banana-cmd")) {
-            sendMessage(event, """
+            event.getChannel().sendMessage("""
                     **Banana Command List:**
                     ```$banana-filter (on|off|status)
                     $contribute <subject> <contributeTitle>
-                    $contribute (subjects)```""", false);
+                    $contribute (subjects)```""").queue();
         }
     }
 }

@@ -9,9 +9,7 @@ import logger.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
-import java.util.Scanner;
-
-public class RiniBot {
+public class BananaBot {
     public static void main(String[] args) throws Exception {
         BotTokenID botTokenID = new BotTokenID();
         JDA jda = JDABuilder.createDefault(botTokenID.getTokenID()).build();

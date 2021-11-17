@@ -3,13 +3,14 @@ package auth;
 import java.io.*;
 
 public class BotTokenID {
+    private static final String BOT_FOLDER_NAME = "BananaBot";
+    private static final String BOT_FOLDER = System.getProperty("user.home") + "/Documents/" + BOT_FOLDER_NAME;
     private String tokenID = "";
-    private static final String folderName = "RiniBot";
-    public static String botFolder = System.getProperty("user.home") + "/Documents/" + folderName;
+
     public BotTokenID() {
-        File directory = new File(botFolder);
+        File directory = new File(BOT_FOLDER);
         if (directory.mkdir()) {
-            System.out.println("Folder created " + folderName);
+            System.out.println("Folder created " + BOT_FOLDER_NAME);
             writeTokenFile();
         } else {
             System.out.println("Reading token...");
@@ -17,11 +18,19 @@ public class BotTokenID {
         }
     }
 
+    private void writeTokenFile() {
+        try {
+            FileWriter writer = new FileWriter(BOT_FOLDER + "/" + "token.txt");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void readTokenFile() {
         try {
-            FileReader fileReader = new FileReader(botFolder + "/" + "token.txt");
+            FileReader fileReader = new FileReader(BOT_FOLDER + "/" + "token.txt");
             BufferedReader reader = new BufferedReader(fileReader);
-
             tokenID = reader.readLine();
             reader.close();
         } catch (IOException e) {
@@ -29,16 +38,15 @@ public class BotTokenID {
         }
     }
 
-    private void writeTokenFile() {
-        try {
-            FileWriter writer = new FileWriter(botFolder + "/" + "token.txt");
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public String getTokenID() {
         return tokenID;
+    }
+
+    public static String getBotFolderName() {
+        return BOT_FOLDER_NAME;
+    }
+
+    public static String getBotFolder() {
+        return BOT_FOLDER;
     }
 }

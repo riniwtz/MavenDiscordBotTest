@@ -10,10 +10,10 @@ import static events.BaseCommand.*;
 public class Changelog extends ListenerAdapter {
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         if (command.equals(BotPrefix.prefix + "changelog")) {
-            sendMessage(event, """
+            event.getChannel().sendMessage("""
                     Changelog Update v1.0 Beta:
                     + Added new commands (-commands, -prefix, -filter)
-                    + Added Logger""", false);
+                    + Added Logger""").queue();
         }
     }
 }

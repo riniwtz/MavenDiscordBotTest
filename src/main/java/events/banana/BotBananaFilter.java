@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 import static events.BaseCommand.*;
 
 public class BotBananaFilter extends ListenerAdapter {
-    private static boolean isActive = false;
+    private static boolean isActive = true;
     StringBuilder regexPattern = new StringBuilder();
 
     public BotBananaFilter() {
@@ -53,16 +53,16 @@ public class BotBananaFilter extends ListenerAdapter {
 
         if (command.equals("$banana-filter")) {
             if (commandGroup.length == 1)
-                sendMessage(event, "`$banana-filter <on|off|status>`", false);
+                event.getChannel().sendMessage("`$banana-filter <on|off|status>`").queue();
             if (commandGroup.length == 2) {
                 if (commandGroup[1].equals("status"))
-                    sendMessage(event, "Banana Message Filter status: " + getStatus(), false);
+                    event.getChannel().sendMessage("Banana Message Filter status: ").queue();
                 if (isActive) {
                     switch (commandGroup[1]) {
-                        case "on" -> sendMessage(event, "Banana Message Filter is already enabled", false);
+                        case "on" -> event.getChannel().sendMessage("Banana Message Filter is already enabled").queue();
                         case "off" -> {
                             isActive = false;
-                            sendMessage(event, "Banana Message Filter has been disabled by " + Objects.requireNonNull(event.getMember()).getUser().getName(), false);
+                            event.getChannel().sendMessage("Banana Message Filter has been disabled by " + Objects.requireNonNull(event.getMember()).getUser().getName()).queue();
                         }
                     }
                 } else {

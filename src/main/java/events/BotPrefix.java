@@ -13,12 +13,12 @@ public class BotPrefix extends ListenerAdapter {
         // prefix
         if (command.equals(prefix + "prefix")) {
             if (commandGroup.length == 1)
-                sendMessage(event, "The bot prefix is: `" + prefix + "`", false);
+                event.getChannel().sendMessage("The bot prefix is: `" + prefix + "`").queue();
             if (commandGroup.length == 2) {
                 String newPrefix = commandGroup[1];
                 if (checkValidPrefixLength(event, newPrefix) && checkValidNewPrefix(event, newPrefix)) {
                     setPrefix(newPrefix.charAt(0));
-                    sendMessage(event, "RiniBot new prefix is: `" + prefix + "`", false);
+                    event.getChannel().sendMessage("RiniBot new prefix is: `" + prefix + "`").queue();
                 }
             }
         }
@@ -31,9 +31,9 @@ public class BotPrefix extends ListenerAdapter {
     private boolean checkValidNewPrefix(GuildMessageReceivedEvent event, String newPrefix) {
         // if new prefix is the same as current prefix
         if (newPrefix.charAt(0) == prefix)
-            sendMessage(event, "`" + prefix + "` has already been set", false);
+            event.getChannel().sendMessage("`" + prefix + "` has already been set").queue();
         else if (hasNumber(newPrefix))
-            sendMessage(event, "**[Prefix must not contain any numerical values]**", false);
+            event.getChannel().sendMessage("**[Prefix must not contain any numerical values]**").queue();
         else
             return true;
         return false;
@@ -42,7 +42,7 @@ public class BotPrefix extends ListenerAdapter {
     private boolean checkValidPrefixLength(GuildMessageReceivedEvent event, String newPrefix) {
         // Character Length
         if (newPrefix.length() == 1) return true;
-        sendMessage(event, "**[Single prefix character only]**", false);
+        event.getChannel().sendMessage("**[Single prefix character only]**").queue();
         return false;
     }
 }

@@ -24,13 +24,6 @@ public class BaseCommand extends ListenerAdapter {
         message = event.getMessage().getContentRaw();
     }
 
-    public static void sendMessage(GenericGuildMessageEvent event, Object text, boolean isComplete) {
-        if (!isComplete)
-            event.getChannel().sendMessage(String.valueOf(text)).queue();
-        else
-            event.getChannel().sendMessage(String.valueOf(text)).complete();
-    }
-
     public static boolean hasNumber(String text) {
         Pattern pattern = Pattern.compile("[0-9]");
         Matcher matcher = pattern.matcher(text);
