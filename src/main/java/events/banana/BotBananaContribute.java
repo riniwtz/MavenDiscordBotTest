@@ -36,14 +36,13 @@ public class BotBananaContribute extends ListenerAdapter {
 
     private Path directoryVerification;
     private String contributionSubject, contributionAuthor, contributionDate, contributionTitle;
-    private String NAME_FOLDER_DIRECTORY, INFO_FOLDER_DIRECTORY;
 
     public BotBananaContribute() {
-        createFolder(CONTRIBUTION_FOLDER_DIRECTORY);
-        createFolder(DATE_FOLDER_DIRECTORY);
+        makeFolder(CONTRIBUTION_FOLDER_DIRECTORY);
+        makeFolder(DATE_FOLDER_DIRECTORY);
     }
 
-
+    private String NAME_FOLDER_DIRECTORY, INFO_FOLDER_DIRECTORY;
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         List<Message.Attachment> attachments = event.getMessage().getAttachments();
         switch (command) {
@@ -128,10 +127,9 @@ public class BotBananaContribute extends ListenerAdapter {
         } else sendMessage(event, "`No contributions are available to verify`", false);
     }
 
-    private void createFolder(File folder) {
-        if (folder.mkdir()) System.out.println("Folder created: " + folder.toPath());
-        else if (folder.exists()) System.out.println("Folder already available...");
-        else System.out.println("Folder couldn't create..");
+    private void makeFolder(String directory) {
+        File folder = new File(directory);
+        if (folder.mkdir()) System.out.println("Folder created " + getParseFolderName(directory));
     }
 
     private void moveLocalAttachment(String directory, String newDirectory) {
