@@ -33,6 +33,7 @@ public class BotBananaContribute extends ListenerAdapter {
         setContributionSubject(event.getChannel().getName());
         switch (command) {
             case "$contribute" -> {
+
                 event.getMessage().delete().complete();
                 if (verifyContribution(event, attachments)) {
                     makeFolder(getUserNameFolderDirectory());

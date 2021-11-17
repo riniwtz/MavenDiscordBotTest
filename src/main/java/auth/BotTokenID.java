@@ -42,10 +42,6 @@ public class BotTokenID {
         return tokenID;
     }
 
-    public static String getBotFolderName() {
-        return BOT_FOLDER_NAME;
-    }
-
     public static String getBotFolder() {
         return BOT_FOLDER;
     }

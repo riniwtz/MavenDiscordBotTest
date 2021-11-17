@@ -28,26 +28,5 @@ public class BananaBot {
         jda.addEventListener(new BotBananaContribute());
         // changelog
         jda.addEventListener(new Changelog());
-
-        // Done:
-        /*
-         * + Logger
-         * + Changelog
-         * + Fixed messages
-         * + Finish BotMessageFilter class development
-         * + Finish BotPrefix class development
-         * + Finish BaseCommand class development
-         * + Finish BotCommandList class development
-         * + Added Banana Commands
-         */
-
-        // TODO:
-        /*
-         * + Microsoft document modifier
-         * + Contribute command
-         * + Prevent admins and mods from being affected by word filter
-         * + Fix update message event to prevent bypassers (COMPLETED)
-         * + Learn role and server name or server exclusion method in JDA
-         */
     }
 }
